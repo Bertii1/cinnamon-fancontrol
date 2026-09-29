@@ -1,0 +1,148 @@
+{
+    "section-curve": {
+        "type": "section",
+        "description": "Curva della ventola"
+    },
+    "profile": {
+        "type": "combobox",
+        "default": "balanced",
+        "description": "Profilo",
+        "tooltip": "Silenzioso / Bilanciato / Prestazioni sono curve predefinite. Personalizzato usa la curva qui sotto. Fisso ignora la temperatura.",
+        "options": {
+            "Silenzioso": "silent",
+            "Bilanciato": "balanced",
+            "Prestazioni": "performance",
+            "Personalizzato": "custom",
+            "Fisso": "fixed"
+        }
+    },
+    "customCurve": {
+        "type": "entry",
+        "default": "45:0,50:8,55:15,60:22,65:30,70:38,75:47,80:57,85:70,90:84,95:100",
+        "description": "Curva personalizzata (temperatura:%)",
+        "dependency": "profile=custom",
+        "tooltip": "Coppie temperatura:velocita' separate da virgola, in ordine crescente. Es: 45:0,60:30,80:70,95:100"
+    },
+    "fixedSpeed": {
+        "type": "spinbutton",
+        "default": 50,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "units": "%",
+        "description": "Velocita' fissa",
+        "dependency": "profile=fixed"
+    },
+
+    "section-sensors": {
+        "type": "section",
+        "description": "Sensori di temperatura"
+    },
+    "sensors": {
+        "type": "entry",
+        "default": "coretemp,nvme",
+        "description": "Sensori (nomi hwmon separati da virgola)",
+        "tooltip": "Vuoto = tutti i sensori trovati. Esempi: coretemp (CPU), nvme (SSD), acpitz. Qui sul tuo portatile esistono coretemp, nvme e acpitz."
+    },
+    "sensorAlgorithm": {
+        "type": "combobox",
+        "default": "max",
+        "description": "Come combinarli",
+        "options": {
+            "Massimo (piu' prudente)": "max",
+            "Media": "average",
+            "Minimo (piu' silenzioso)": "min"
+        }
+    },
+
+    "section-response": {
+        "type": "section",
+        "description": "Reattivita'"
+    },
+    "hysteresis": {
+        "type": "spinbutton",
+        "default": 2,
+        "min": 0,
+        "max": 20,
+        "step": 0.5,
+        "units": "°C",
+        "description": "Isteresi",
+        "tooltip": "Differenza minima di temperatura perche' la curva venga rivalutata. Evita che la ventola oscilli quando la temperatura balla di un grado."
+    },
+    "responseTime": {
+        "type": "spinbutton",
+        "default": 5,
+        "min": 0,
+        "max": 120,
+        "step": 1,
+        "units": "s",
+        "description": "Tempo di risposta",
+        "tooltip": "Intervallo minimo fra due variazioni di velocita'."
+    },
+    "stepUp": {
+        "type": "spinbutton",
+        "default": 8,
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "units": "%",
+        "description": "Salita massima per aggiornamento"
+    },
+    "stepDown": {
+        "type": "spinbutton",
+        "default": 4,
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "units": "%",
+        "description": "Discesa massima per aggiornamento"
+    },
+    "minSpeed": {
+        "type": "spinbutton",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "units": "%",
+        "description": "Velocita' minima"
+    },
+    "maxSpeed": {
+        "type": "spinbutton",
+        "default": 100,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "units": "%",
+        "description": "Velocita' massima"
+    },
+
+    "section-safety": {
+        "type": "section",
+        "description": "Sicurezza"
+    },
+    "criticalTemp": {
+        "type": "spinbutton",
+        "default": 92,
+        "min": 60,
+        "max": 105,
+        "step": 1,
+        "units": "°C",
+        "description": "Temperatura critica (100% immediato)",
+        "tooltip": "Sopra questa temperatura isteresi e tempo di risposta vengono ignorati."
+    },
+    "alertsEnabled": {
+        "type": "switch",
+        "default": true,
+        "description": "Avviso desktop alla temperatura critica"
+    },
+
+    "section-panel": {
+        "type": "section",
+        "description": "Pannello"
+    },
+    "showTemperature": {
+        "type": "switch",
+        "default": true,
+        "description": "Mostra la temperatura nell'etichetta del pannello"
+    }
+}

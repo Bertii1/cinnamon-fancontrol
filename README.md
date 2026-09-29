@@ -20,12 +20,32 @@ reverse-engineer its embedded controller.
 The panel shows `44° 84%` — CPU temperature and current fan speed. A left click
 opens a drop-down menu like the sound applet, with:
 
-- temperature, fan speed, power profile and battery level;
+- temperature, fan speed, sensor summary, power profile and battery level;
+- a **curve profile** submenu (Silent / Balanced / Performance / Custom / Fixed);
 - a slider for the manual fan speed;
 - an **Automatic** switch.
 
 Moving the slider turns the automatic mode off; switching it back on restores the
 curve. The choice is remembered in `~/.config/fancontrol-applet.json`.
+
+## Features
+
+Borrowed from the established tools (CoolerControl, Fan Control, thinkfan):
+
+| Feature | From |
+|---------|------|
+| Multi-sensor input with **max / average / min** combination | CoolerControl, Fan Control |
+| Curve **profiles** (Silent / Balanced / Performance / Custom / Fixed) | CoolerControl profiles |
+| Point-based curve with **linear interpolation** ("Graph" behaviour) | Fan Control |
+| **Hysteresis** — the curve is only re-evaluated after N °C of movement | Fan Control, thinkfan |
+| **Response time** — minimum interval between two speed changes | Fan Control, CoolerControl *Functions* |
+| Separate **step up / step down** limits (smooth ramp, fast up / slow down) | Fan Control |
+| **Emergency bypass** — 100 % immediately above the critical temperature | CoolerControl failsafe |
+| **Desktop alert** on critical temperature | CoolerControl alerts |
+| Restores the EC to automatic when the applet is removed | fan2go / amdgpu-fancurve |
+
+Everything is configurable from the standard Cinnamon applet settings dialog
+(right-click the applet → *Configure*), not from constants in the code.
 
 ## Automatic policy
 
@@ -49,12 +69,11 @@ state.
 Adjustments:
 
 - `performance` profile: **+10 %**, `power-saver`: **−10 %**;
-- on battery: **−10 %** and capped at **60 %** (cap lifted above 78 °C);
-- the ramp is limited to `RAMP_STEP = 8 %` per update (every 2.5 s), so the fan
-  moves gradually. Above `EMERGENCY_TEMP = 85 °C` the limit is bypassed.
+- on battery: **−10 %** and capped at **60 %** (cap lifted above 78 °C).
 
-All of these live in `_curve()` and `_computeTarget()` in
-`fancontrol@filippo/applet.js`.
+All the parameters above — curve, sensors, hysteresis, response time, step
+up/down, limits, critical temperature — are editable in the applet settings. The
+table is the **Balanced** preset.
 
 ## Requirements
 
