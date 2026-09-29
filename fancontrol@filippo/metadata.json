@@ -1,0 +1,8 @@
+{
+    "uuid": "fancontrol@filippo",
+    "name": "Controllo Ventola",
+    "description": "Controllo della ventola basato su nbfc-linux. Politica automatica che tiene conto di temperatura, profilo energetico e batteria, con override manuale tramite slider.",
+    "icon": "weather-windy-symbolic",
+    "max-instances": "1",
+    "version": "1.0"
+}
