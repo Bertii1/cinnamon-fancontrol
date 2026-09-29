@@ -6,7 +6,10 @@ laptop fan through [nbfc-linux](https://github.com/nbfc-linux/nbfc-linux), with:
 - an **automatic policy** driven by CPU temperature, the power profile
   (performance / balanced / power-saver) *and* battery state;
 - a **manual override** through a slider, right in the panel, next to the volume;
-- a **smooth ramp** so the fan glides between values instead of jumping.
+- a **smooth ramp** so the fan glides between values instead of jumping;
+- a **graphical curve editor** with draggable points, named curves, presets and
+  curve combination;
+- **granular notifications**, each one switchable.
 
 It was written for an **HP 250 15.6 inch G9 Notebook PC**, a machine whose fan is
 not supported by any mainline driver. This repository also contains the nbfc
@@ -21,7 +24,14 @@ The panel shows `44° 84%` — CPU temperature and current fan speed. A left cli
 opens a drop-down menu like the sound applet, with:
 
 - temperature, fan speed, sensor summary, power profile and battery level;
-- a **curve profile** submenu (Silent / Balanced / Performance / Custom / Fixed);
+- a **live history graph** of temperature and fan speed;
+- a **Curve** submenu: the built-in curves, the ones you created with the editor,
+  and *Fixed speed*;
+- a **Notifications** submenu: a master switch plus one toggle per event
+  (critical temperature, fan not responding, unreadable sensors, automatic curve
+  change);
+- a **Tools** submenu: curve editor, fan test (a 0 → 100 % sweep with a report),
+  follow the power profile, CSV logging, open the configuration folder;
 - a slider for the manual fan speed;
 - an **Automatic** switch.
 
@@ -43,9 +53,34 @@ Borrowed from the established tools (CoolerControl, Fan Control, thinkfan):
 | **Emergency bypass** — 100 % immediately above the critical temperature | CoolerControl failsafe |
 | **Desktop alert** on critical temperature | CoolerControl alerts |
 | Restores the EC to automatic when the applet is removed | fan2go / amdgpu-fancurve |
+| **Graphical curve editor**: draggable points, add/remove, presets, combine two curves (max/min/average), named library | CoolerControl graph editor, Fan Control |
+| **Live history graph** of temperature and fan speed | CoolerControl dashboards |
+| **Fan test** (0 → 100 % sweep with a measured report) | FanControl / CoolerControl calibration |
+| **Granular notifications**, each switchable | CoolerControl alerts |
+| **CSV logging** of temperature, fan and profile | monitoring tools |
 
 Everything is configurable from the standard Cinnamon applet settings dialog
-(right-click the applet → *Configure*), not from constants in the code.
+(right-click the applet → *Configure*). Curves live in
+`~/.config/fancontrol/curves.json`.
+
+## The curve editor
+
+`fancontrol@filippo/curve-editor.py` is a small GTK window (it opens from
+**Tools → Editor curve…**):
+
+- drag the points with the mouse; **double-click** on the graph adds one,
+  **right-click** on a point removes it;
+- a toolbar to create, duplicate, rename and delete curves;
+- preset buttons (Silent, Balanced, Performance, Aggressive, Extreme quiet);
+- **Combine…** builds a new curve as the max, min or average of two existing ones;
+- the orange vertical line tracks the real CPU temperature, so you can see where
+  you are on the curve while you edit;
+- **Save** writes the whole library to `~/.config/fancontrol/curves.json`.
+
+The applet picks the library up as soon as the editor closes. In the settings the
+*Curve* field accepts either a name from that library, one of the built-in
+curves, the word `Fisso`/`fixed`, or an inline definition such as
+`50:0,70:50,90:100`.
 
 ## Automatic policy
 

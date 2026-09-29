@@ -3,25 +3,11 @@
         "type": "section",
         "description": "Curva della ventola"
     },
-    "profile": {
-        "type": "combobox",
-        "default": "balanced",
-        "description": "Profilo",
-        "tooltip": "Silenzioso / Bilanciato / Prestazioni sono curve predefinite. Personalizzato usa la curva qui sotto. Fisso ignora la temperatura.",
-        "options": {
-            "Silenzioso": "silent",
-            "Bilanciato": "balanced",
-            "Prestazioni": "performance",
-            "Personalizzato": "custom",
-            "Fisso": "fixed"
-        }
-    },
-    "customCurve": {
+    "curve": {
         "type": "entry",
-        "default": "45:0,50:8,55:15,60:22,65:30,70:38,75:47,80:57,85:70,90:84,95:100",
-        "description": "Curva personalizzata (temperatura:%)",
-        "dependency": "profile=custom",
-        "tooltip": "Coppie temperatura:velocita' separate da virgola, in ordine crescente. Es: 45:0,60:30,80:70,95:100"
+        "default": "Bilanciato",
+        "description": "Curva attiva",
+        "tooltip": "Nome di una curva (incorporata, o creata con l'editor in Strumenti → Editor curve), oppure una definizione inline tipo 50:0,70:50,90:100. Scrivi \"Fisso\" per una velocita' fissa. Curve incorporate: Silenzioso, Bilanciato, Prestazioni, Aggressivo, Silenzio estremo."
     },
     "fixedSpeed": {
         "type": "spinbutton",
@@ -30,8 +16,7 @@
         "max": 100,
         "step": 1,
         "units": "%",
-        "description": "Velocita' fissa",
-        "dependency": "profile=fixed"
+        "description": "Velocita' fissa (con curva \"Fisso\")"
     },
 
     "section-sensors": {
@@ -42,7 +27,7 @@
         "type": "entry",
         "default": "coretemp,nvme",
         "description": "Sensori (nomi hwmon separati da virgola)",
-        "tooltip": "Vuoto = tutti i sensori trovati. Esempi: coretemp (CPU), nvme (SSD), acpitz. Qui sul tuo portatile esistono coretemp, nvme e acpitz."
+        "tooltip": "Vuoto = tutti i sensori trovati. Qui esistono: coretemp (CPU), nvme (SSD), acpitz."
     },
     "sensorAlgorithm": {
         "type": "combobox",
@@ -67,7 +52,7 @@
         "step": 0.5,
         "units": "°C",
         "description": "Isteresi",
-        "tooltip": "Differenza minima di temperatura perche' la curva venga rivalutata. Evita che la ventola oscilli quando la temperatura balla di un grado."
+        "tooltip": "Differenza minima di temperatura perche' la curva venga rivalutata."
     },
     "responseTime": {
         "type": "spinbutton",
@@ -76,8 +61,7 @@
         "max": 120,
         "step": 1,
         "units": "s",
-        "description": "Tempo di risposta",
-        "tooltip": "Intervallo minimo fra due variazioni di velocita'."
+        "description": "Tempo di risposta"
     },
     "stepUp": {
         "type": "spinbutton",
@@ -127,22 +111,57 @@
         "max": 105,
         "step": 1,
         "units": "°C",
-        "description": "Temperatura critica (100% immediato)",
-        "tooltip": "Sopra questa temperatura isteresi e tempo di risposta vengono ignorati."
+        "description": "Temperatura critica (100% immediato)"
+    },
+    "followPowerProfile": {
+        "type": "switch",
+        "default": false,
+        "description": "Segui il profilo energetico",
+        "tooltip": "Cambia curva automaticamente al cambio di profilo: performance → Prestazioni, balanced → Bilanciato, power-saver → Silenzioso."
+    },
+
+    "section-notify": {
+        "type": "section",
+        "description": "Notifiche"
     },
     "alertsEnabled": {
         "type": "switch",
         "default": true,
-        "description": "Avviso desktop alla temperatura critica"
+        "description": "Notifiche attive (interruttore generale)"
+    },
+    "notifyCritical": {
+        "type": "switch",
+        "default": true,
+        "description": "Temperatura critica"
+    },
+    "notifyFanFail": {
+        "type": "switch",
+        "default": true,
+        "description": "Ventola non risponde"
+    },
+    "notifySensorMissing": {
+        "type": "switch",
+        "default": true,
+        "description": "Sensori non leggibili"
+    },
+    "notifyCurveChange": {
+        "type": "switch",
+        "default": false,
+        "description": "Cambio curva automatico"
     },
 
-    "section-panel": {
+    "section-misc": {
         "type": "section",
-        "description": "Pannello"
+        "description": "Pannello e diagnostica"
     },
     "showTemperature": {
         "type": "switch",
         "default": true,
-        "description": "Mostra la temperatura nell'etichetta del pannello"
+        "description": "Mostra la temperatura nell'etichetta"
+    },
+    "logToFile": {
+        "type": "switch",
+        "default": false,
+        "description": "Registra lo storico su file (CSV)"
     }
 }
