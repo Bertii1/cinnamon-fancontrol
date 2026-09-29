@@ -100,7 +100,7 @@ class FanControlApplet extends Applet.TextIconApplet {
         this._tick();
 
         // se l'ultima volta era in manuale, riapplica la velocita' scelta
-        if (!this._auto)
+        if (this._auto === false)
             this._writeSpeed(this._manual);
     }
 
@@ -133,7 +133,7 @@ class FanControlApplet extends Applet.TextIconApplet {
 
         this._autoSwitch = new PopupMenu.PopupSwitchMenuItem(
             "Automatico (temp + profilo + batteria)", this._auto);
-        this._autoSwitch.connect("toggled", (item, state) => this._onAutoToggle(state));
+        this._autoSwitch.connect("toggled", (item) => this._onAutoToggle(item.state));
         this.menu.addMenuItem(this._autoSwitch);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -163,12 +163,13 @@ class FanControlApplet extends Applet.TextIconApplet {
         this._writeSpeed(pct);
     }
 
-    _onAutoToggle(item, state) {
+    _onAutoToggle(state) {
         if (this._switchSilent) return;
-        this._auto = state;
+        this._auto = (state === true);
         this._saveState();
-        if (state) {
-            this._lastWritten = -1;    // il prossimo tick applica la curva
+        if (this._auto) {
+            this._lastWritten = -1;    // forza il ricalcolo
+            this._tick();              // e applicalo subito, senza aspettare il timer
         } else {
             this._writeSpeed(this._manual);
         }
@@ -295,7 +296,7 @@ class FanControlApplet extends Applet.TextIconApplet {
     _saveState() {
         try {
             GLib.file_set_contents(this._statePath,
-                JSON.stringify({ auto: this._auto, manual: this._manual }));
+                JSON.stringify({ auto: (this._auto === true), manual: this._manual }));
         } catch (e) {}
     }
 
@@ -306,6 +307,7 @@ class FanControlApplet extends Applet.TextIconApplet {
             let o = JSON.parse(bytesToString(data));
             if (typeof o.auto === "boolean") this._auto = o.auto;
             if (typeof o.manual === "number") this._manual = o.manual;
+            this._auto = (this._auto === true);   // mai undefined
         } catch (e) {}
     }
 
@@ -314,6 +316,8 @@ class FanControlApplet extends Applet.TextIconApplet {
             Mainloop.source_remove(this._timeout);
             this._timeout = 0;
         }
+        // non lasciare la ventola bloccata al valore manuale
+        runOut(["nbfc", "set", "--auto"], (out) => {});
     }
 }
 
